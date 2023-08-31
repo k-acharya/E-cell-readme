@@ -1,11 +1,10 @@
 const verifyToken = require("../Middlewares/VerifyToken");
 const {
-  
   blogs1,
   PublishedBlog,
- 
 } = require("../Models/UserModel");
 
+const sendEmail = require("../Utils/Email/EmailService")
 const getBlogs = (req, res) => {
   console.log("Request to fetch blogs has been made.");
   blogs1.find({}, (err, result) => {
@@ -59,7 +58,7 @@ const acceptedBlogsPost = async (req, res) => {
     const email = blog.writeremail;
     const subject = " Congratulations! Your blog Published!";
     const text = `Dear ${blog.writernmae},\n\n We feel immense pleasure to tell you that our Content team has verified your blog and it has met our standards thus your blog has been published on our website https://ecellnits.org \n\n Keep writing blogs and inspiring the mass.\n\nRegards\n\nE-Cell,\nNational Institute of Technology, Silchar`;
-    sendEmail(email, subject, text);
+    sendEmail.sendEmail(email, subject, text);
 
     const email0 = [
       "aditya21_ug@civil.nits.ac.in",
@@ -70,7 +69,7 @@ const acceptedBlogsPost = async (req, res) => {
     ];
     const subject0 = "A blog reviewed and published!";
     const text0 = `Dear Content Team Head, Co-head & Executive Head,\n\n The blog with the title "${blog.title}" from "${blog.writernmae}" having email ${blog.writeremail} has been reviewed by a member of blog verifying team and thus has been published on https://ecellnits.org/resources\n\nRegards\n\nE-Cell Technical Team,\nNational Institute of Technology, Silchar`;
-    sendEmail(email0, subject0, text0);
+    sendEmail.sendEmail(email0, subject0, text0);
 
     res.status(200).json({ message: "Blog published successfully" });
   } catch (error) {

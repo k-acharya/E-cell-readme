@@ -6,6 +6,7 @@ const {
 } = require("../Models/UserModel");
 
 const verifyToken = require("../Middlewares/VerifyToken");
+const sendEmail = require("../Utils/Email/EmailService")
 
 const createBlog = async (req, res) => {
   const user = req.body;
@@ -22,7 +23,7 @@ const createBlog = async (req, res) => {
   ];
   const subject = "A New Blog added on E-Cell website!";
   const text = `Dear Content Team member,\n\nA new blog has been added on the ecell offcial website. Please visit https://ecellnits.org/provisionalblog and kindly verify the blog content.\n\nUsername: dtsx\nPassword: golmol-aurargb\n\nRegards\n\n E-Cell Technical Team,\nNational Institute of Technology, Silchar.`;
-  sendEmail(email, subject, text);
+  sendEmail.sendEmail(email, subject, text);
   res.json(user);
 };
 

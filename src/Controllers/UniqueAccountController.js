@@ -1,9 +1,9 @@
 const {
   UserModel,
-  
   OTPModel,
-  
 } = require("../Models/UserModel");
+
+const sendEmail = require("../Utils/Email/EmailService")
 
 const checkEmail = (req, res) => {
   const email = req.body.email;
@@ -26,7 +26,7 @@ const sendOtp = async (req, res) => {
   const otp = Math.floor(100000 + Math.random() * 900000);
 
   try {
-    sendEmail(
+    sendEmail.sendEmail(
       email,
       "ECELL Signup OTP",
       `Your OTP for verifying your email id for creating account is: ${otp}`

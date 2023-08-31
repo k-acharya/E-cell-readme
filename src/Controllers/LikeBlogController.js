@@ -1,8 +1,6 @@
 const {
-  
   PublishedBlog,
   AuthSchemaModel,
- 
 } = require("../Models/UserModel");
 
 const verifyToken = require("../Middlewares/VerifyToken");

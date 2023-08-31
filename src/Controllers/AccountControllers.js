@@ -1,13 +1,12 @@
 const {
-  
   AuthSchemaModel,
-  
   OTPresetpwdModel,
 } = require("../Models/UserModel");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const verifyToken = require("../Middlewares/VerifyToken");
+const sendEmail = require("../Utils/Email/EmailService")
 
 const signup = async (req, res) => {
   const { name, email, password, bio, userimg } = req.body;
@@ -213,7 +212,7 @@ const forgotPwd = async (req, res) => {
   }
 
   try {
-    sendEmail(
+    sendEmail.sendEmail(
       email,
       "[OTP] ECELL OTP",
       `Your OTP for verifying your email id for resetting password is: ${otp}`
@@ -296,7 +295,7 @@ const changingPwd = async (req, res) => {
     const email12 = email;
     const subject = "[Security Alert] ECELL NITS";
     const text = `Dear ${email},\n\nPassword of your e-cell nits account was recently changed. If you don't recognize this activity, your account might be at risk so, please contact E-Cell NITS immediately.\n\nRegards,\n\nE-Cell,\nNational Institute of Technology, Silchar.`;
-    sendEmail(email12, subject, text);
+    sendEmail.sendEmail(email12, subject, text);
   } catch (error) {
     console.error("Failed to change password", error);
     res.status(500).json({ error: "Failed to change password" });
