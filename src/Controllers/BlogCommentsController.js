@@ -1,11 +1,7 @@
 const {
-  UserModel,
-  UserModel2,
-  blogs1,
+ 
   PublishedBlog,
-  AuthSchemaModel,
-  OTPModel,
-  OTPresetpwdModel,
+ 
 } = require("../Models/UserModel");
 
 const verifyToken = require("../Middlewares/VerifyToken");
