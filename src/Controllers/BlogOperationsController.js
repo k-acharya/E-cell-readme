@@ -1,12 +1,7 @@
-const {
-  
-  blogs1,
-  PublishedBlog,
-  
-} = require("../Models/UserModel");
+const { blogs1, PublishedBlog } = require("../Models/UserModel");
 
 const verifyToken = require("../Middlewares/VerifyToken");
-const sendEmail = require("../Utils/Email/EmailService")
+const sendEmail = require("../Utils/Email/EmailService");
 
 const createBlog = async (req, res) => {
   const user = req.body;
@@ -16,10 +11,11 @@ const createBlog = async (req, res) => {
   /* Sending mail to Content team member for kind verification of blog */
   const email = [
     "aditya21_ug@civil.nits.ac.in",
-    "uttirna21_ug@ece.nits.ac.in",
-    "aditi.khataniar@gmail.com",
-    "vivekmfp24@gmail.com",
-    "vivekkumar21_ug@ee.nits.ac.in",
+    // "hersidia@gmail.com",
+    // "uttirna21_ug@ece.nits.ac.in",
+    // "aditi.khataniar@gmail.com",
+    // "vivekmfp24@gmail.com",
+    // "vivekkumar21_ug@ee.nits.ac.in",
   ];
   const subject = "A New Blog added on E-Cell website!";
   const text = `Dear Content Team member,\n\nA new blog has been added on the ecell offcial website. Please visit https://ecellnits.org/provisionalblog and kindly verify the blog content.\n\nUsername: dtsx\nPassword: golmol-aurargb\n\nRegards\n\n E-Cell Technical Team,\nNational Institute of Technology, Silchar.`;
@@ -151,5 +147,5 @@ module.exports = {
   myProvisionalBlogs,
   myPublishedBlogs,
   publicilyWrittenBlogs,
-  tagSpecificBlog
+  tagSpecificBlog,
 };

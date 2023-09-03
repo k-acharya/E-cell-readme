@@ -35,7 +35,7 @@ router.post("/acceptedblogs", BlogController.acceptedBlogsPost)
 router.put("/editblog/:blogId", BlogController.editBlog)
 
 
-router.post("createblog",BlogOpearionsController.createBlog)
+router.post("/createblog",BlogOpearionsController.createBlog)
 router.get("/myprovisionalblogs", BlogOpearionsController.myProvisionalBlogs)
 router.get("/mypublishedblogs", BlogOpearionsController.myPublishedBlogs)
 router.get("/publicwrittenblogs/:authoruniqueid", BlogOpearionsController.publicilyWrittenBlogs)
