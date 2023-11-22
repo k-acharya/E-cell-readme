@@ -16,6 +16,7 @@ router.get("/fetchprofile", AccountController.fetchProfile)
 router.put("/editprofile", AccountController.editProfile)
 router.post("/forgotpwd", AccountController.forgotPwd)
 router.post("/verifyotpresetpwd", AccountController.verifyOrpResetPwd)
+router.post("/deleteaccount",AccountController.deleteAccount)
 router.put("/changingpwd", AccountController.changingPwd)
 router.get("/publicprofile/:authoruniqueid", AccountController.getPublicProfile)
 
