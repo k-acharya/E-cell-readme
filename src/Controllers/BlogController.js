@@ -6,7 +6,7 @@ const {
 
 const sendEmail = require("../Utils/Email/EmailService")
 const getBlogs = (req, res) => {
-  console.log("Request to fetch blogs has been made.");
+  // console.log("Request to fetch blogs has been made.");
   blogs1.find({}, (err, result) => {
     if (err) {
       res.json(err);
@@ -28,7 +28,7 @@ const getBlogsId = async (req, res) => {
 };
 
 const acceptedBlogs = (req, res) => {
-  console.log("request to fetch accepted blogs has been made");
+  // console.log("request to fetch accepted blogs has been made");
   PublishedBlog.find({}, (err, result) => {
     if (err) {
       res.json(err);

@@ -55,6 +55,19 @@ const Authschema = new mongoose.Schema({
   instagram: {
     type: String,
   },
+  role: {
+    type: String,
+    default: "client",
+  },
+  deleteAccount: [
+    {
+      flaggedForDeletion: {
+        type: Boolean,
+        default: false,
+      },
+      reason: String,
+    },
+  ],
 });
 
 const blogsschema = new mongoose.Schema({
@@ -107,6 +120,7 @@ const blogsschema = new mongoose.Schema({
   comments: [
     {
       commentauthor: String,
+      authorid: String,
       commentpic: String,
       text: String,
       createdAt: {

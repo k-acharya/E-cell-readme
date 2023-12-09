@@ -50,7 +50,7 @@ const fetchLikedBlogs = async (req, res) => {
 
       const likedBlogs = await PublishedBlog.find({ likes: userId }).exec();
 
-      console.log(likedBlogs);
+      // console.log(likedBlogs);
       res.status(200).json(likedBlogs);
     } catch (error) {
       console.error("Error fetching liked blogs:", error);

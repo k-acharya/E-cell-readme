@@ -16,6 +16,7 @@ router.get("/fetchprofile", AccountController.fetchProfile)
 router.put("/editprofile", AccountController.editProfile)
 router.post("/forgotpwd", AccountController.forgotPwd)
 router.post("/verifyotpresetpwd", AccountController.verifyOrpResetPwd)
+router.post("/deleteaccount",AccountController.deleteAccount)
 router.put("/changingpwd", AccountController.changingPwd)
 router.get("/publicprofile/:authoruniqueid", AccountController.getPublicProfile)
 
@@ -47,6 +48,9 @@ router.get("/api/likedblogs", LikeBlogControllers.fetchLikedBlogs)
 
 router.post("/api/comment/:id", BlogCommentsController.apiComment)
 router.get("/api/comment/:postId", BlogCommentsController.getCommentPostId)
+
+// get all accounts
+router.get("/allaccounts", AccountController.getAllAccounts)
 
 router.get("/", HomeController.home);
 
