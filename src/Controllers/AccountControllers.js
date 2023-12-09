@@ -24,7 +24,7 @@ const signup = async (req, res) => {
         .json({ error: "Password should not be less than 8 characters" });
     }
 
-    const existingUser = await AuthSchemaModel.findOne({ Email });
+    const existingUser = await AuthSchemaModel.findOne({ email:Email });
     if (existingUser) {
       return res.status(400).json({ error: "Email already exists" });
     }
@@ -57,7 +57,7 @@ const login = async (req, res) => {
     const Email = email.toString().trim();
     const Password = password.toString().trim();
 
-    const user = await AuthSchemaModel.findOne({ Email });
+    const user = await AuthSchemaModel.findOne({ email:Email });
     if (!user) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
@@ -249,7 +249,7 @@ const forgotPwd = async (req, res) => {
   const Email = email.toString().trim();
   const otp = Math.floor(100000 + Math.random() * 900000);
 
-  const existingUser = await AuthSchemaModel.findOne({ Email });
+  const existingUser = await AuthSchemaModel.findOne({ email:Email });
   if (!existingUser) {
     return res.status(400).json({ error: "No account with this email found." });
   }
@@ -269,7 +269,7 @@ const forgotPwd = async (req, res) => {
 
     res.json({ success: true, email });
   } catch (error) {
-    console.log("Error sending OTP:", error);
+    console.error("Error sending OTP:", error);
     res.status(500).json({ error: "An error occurred while sending the OTP" });
   }
 };
@@ -444,3 +444,4 @@ module.exports = {
   deleteAccount,
   getAllAccounts,
 };
+// accountController.js
