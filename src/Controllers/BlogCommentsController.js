@@ -8,8 +8,9 @@ const verifyToken = require("../Middlewares/VerifyToken");
 
 const apiComment = async (req, res) => {
   verifyToken.verifyToken(req, res, async () => {
-    const userId = req.user.userId;
+   
     try {
+      const userId = req.user.userId;
       const blogId = req.params.id;
       const { commentauthor, text, commentpic } = req.body;
 
@@ -18,6 +19,8 @@ const apiComment = async (req, res) => {
       if (!blog) {
         return res.status(404).json({ error: "Blog not found" });
       }
+
+      // console.log(userId)
 
       const newComment = {
         commentauthor,
@@ -44,11 +47,11 @@ const getCommentPostId = async (req, res) => {
     console.log(postId);
     const comments = await PublishedBlog.find({ _id: postId });
     // const comments = await blogs1.find({ postId });
-    console.log(comments);
+    // console.log(comments);
     res.json(comments);
   } catch (error) {
     console.error("Error fetching comments:", error);
-    console.log("Error fetching comments:",error);
+    // console.log("Error fetching comments:",error);
     res.status(500).json({ error: "Failed to fetch comments" });
   }
 };

@@ -120,7 +120,10 @@ const blogsschema = new mongoose.Schema({
   comments: [
     {
       commentauthor: String,
-      authorid: String,
+      authorid: {
+        type:String,
+        // required:true,
+      },
       commentpic: String,
       text: String,
       createdAt: {
