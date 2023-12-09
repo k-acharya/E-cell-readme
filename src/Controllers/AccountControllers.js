@@ -32,7 +32,7 @@ const signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(Password, 10);
     const user = new AuthSchemaModel({
       Name,
-      Email,
+      email:Email,
       password: hashedPassword,
       Bio,
       userimg,
@@ -262,7 +262,7 @@ const forgotPwd = async (req, res) => {
     );
 
     await OTPresetpwdModel.findOneAndUpdate(
-      { Email },
+      { email:Email },
       { otp },
       { upsert: true }
     );
