@@ -8,6 +8,7 @@ const verifyToken = require("../Middlewares/VerifyToken");
 
 const apiComment = async (req, res) => {
   verifyToken.verifyToken(req, res, async () => {
+    const userId = req.user.userId;
     try {
       const blogId = req.params.id;
       const { commentauthor, text, commentpic } = req.body;
@@ -23,6 +24,7 @@ const apiComment = async (req, res) => {
         commentpic,
         text,
         createdAt: new Date(),
+        authorid: userId,
       };
 
       blog.comments.push(newComment);

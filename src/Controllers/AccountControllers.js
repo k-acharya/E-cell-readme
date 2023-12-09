@@ -387,15 +387,46 @@ const deleteAccount = async (req, res) => {
         return res
           .status(400)
           .json({ error: "Please provide a reason for deleting your account" });
-      }else{
-        const Reason = reason.toString().trim()
+      } else {
+        const Reason = reason.toString().trim();
         user.deleteAccount.push({ flaggedForDeletion: true, reason: Reason });
       }
 
-      return res.status(200).json({ message: "Account scheduled for deletion" })
+      return res
+        .status(200)
+        .json({ message: "Account scheduled for deletion" });
     } catch (e) {
       console.error(e);
       return res.status(500).json({ error: "something went wrong" });
+    }
+  });
+};
+
+const getAllAccounts = async (req, res) => {
+  verifyToken.verifyToken(req, res, async () => {
+    const userId = req.user.userId;
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const user = await AuthSchemaModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (user.role === "admin") {
+      try {
+        const users = await AuthSchemaModel.find();
+        res.status(200).json({ users });
+      } catch (e) {
+        console.error(e);
+        return res
+          .status(500)
+          .json({ error: "something went wrong on the server" });
+      }
+    } else {
+      return res.status(401).json({ error: "Not authorized to access this api endpoint" });
     }
   });
 };
@@ -410,5 +441,6 @@ module.exports = {
   verifyOrpResetPwd,
   changingPwd,
   getPublicProfile,
-  deleteAccount
+  deleteAccount,
+  getAllAccounts,
 };

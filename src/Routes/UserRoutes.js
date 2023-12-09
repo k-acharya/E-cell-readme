@@ -49,6 +49,9 @@ router.get("/api/likedblogs", LikeBlogControllers.fetchLikedBlogs)
 router.post("/api/comment/:id", BlogCommentsController.apiComment)
 router.get("/api/comment/:postId", BlogCommentsController.getCommentPostId)
 
+// get all accounts
+router.get("/allaccounts", AccountController.getAllAccounts)
+
 router.get("/", HomeController.home);
 
 module.exports = router;

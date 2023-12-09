@@ -4,22 +4,25 @@ const verifyToken = require("../Middlewares/VerifyToken");
 const sendEmail = require("../Utils/Email/EmailService");
 
 const createBlog = async (req, res) => {
-  const user = req.body;
-  const newUser = new blogs1(user);
-  await newUser.save();
+  verifyToken.verifyToken(req, res, async () => {
+    const user = req.body;
+    const newUser = new blogs1(user);
+    await newUser.save();
 
-  /* Sending mail to Content team member for kind verification of blog */
-  const email = [
-    "aditya21_ug@civil.nits.ac.in",
-    "uttirna21_ug@ece.nits.ac.in",
-    "aditi.khataniar@gmail.com",
-    "vivekmfp24@gmail.com",
-    "vivekkumar21_ug@ee.nits.ac.in",
-  ];
-  const subject = "A New Blog added on E-Cell website!";
-  const text = `Dear Content Team member,\n\nA new blog has been added on the ecell offcial website. Please visit https://ecellnits.org/provisionalblog and kindly verify the blog content.\n\nUsername: dtsx\nPassword: golmol-aurargb\n\nRegards\n\n E-Cell Technical Team,\nNational Institute of Technology, Silchar.`;
-  sendEmail.sendEmail(email, subject, text);
-  res.json(user);
+    /* Sending mail to Content team member for kind verification of blog */
+    const email = [
+      "aditya21_ug@civil.nits.ac.in",
+      "uttirna21_ug@ece.nits.ac.in",
+      "aditi.khataniar@gmail.com",
+      "vivekmfp24@gmail.com",
+      "vivekkumar21_ug@ee.nits.ac.in",
+    ];
+    const subject = "A New Blog added on E-Cell website!";
+    const text = `Dear Content Team member,\n\nA new blog has been added on the ecell offcial website. Please visit https://ecellnits.org/provisionalblog and kindly verify the blog content.\n\nUsername: dtsx\nPassword: golmol-aurargb\n\nRegards\n\n E-Cell Technical Team,\nNational Institute of Technology, Silchar.`;
+    sendEmail.sendEmail(email, subject, text);
+    res.json(user);
+    return res.status(200).json({ message: "Blog created successfully" });
+  });
 };
 
 const myProvisionalBlogs = async (req, res) => {
