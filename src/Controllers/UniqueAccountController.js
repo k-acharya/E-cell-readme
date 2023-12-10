@@ -21,20 +21,21 @@ const checkEmail = (req, res) => {
 };
 
 const sendOtp = async (req, res) => {
-  const { email } = req.body;
+  let { email } = req.body;
+  email = email?.toString().toLowerCase().trim();
 
   const otp = Math.floor(100000 + Math.random() * 900000);
 
   try {
     sendEmail.sendEmail(
       email,
-      "ECELL Signup OTP",
-      `Your OTP for verifying your email id for creating account is: ${otp}`
+      "E-Cell Signup OTP",
+      `Your OTP for Account Registration on the NITS E-Cell Website is: ${otp}\n\nPlease do not share this OTP with anyone.\n\nRegards,\nTeam NITS E-Cell`
     );
 
     await OTPModel.findOneAndUpdate({ email }, { otp }, { upsert: true });
 
-    res.json({ success: true, otp: otp.toString() });
+    return res.status(200).json({ success: true, message: "OTP sent" });
   } catch (error) {
     console.log("Error sending OTP:", error);
     res.status(500).json({ error: "An error occurred while sending the OTP" });
@@ -42,15 +43,17 @@ const sendOtp = async (req, res) => {
 };
 
 const verifyOtp = async (req, res) => {
-  console.log("Request Body:", req.body);
-  const enteredOTP = req.body.otp.toString().trim();
-  const email = req.body.email;
+  // console.log("Request Body:", req.body);
+  const enteredOTP = req.body.otp?.toString().trim();
+
+  let {email} = req.body
+  email = email?.toString().toLowerCase().trim();
 
   try {
     const otpData = await OTPModel.findOne({ email }).exec();
 
-    console.log("Entered OTP:", enteredOTP);
-    console.log("Stored OTP Data:", otpData.otp);
+    // console.log("Entered OTP:", enteredOTP);
+    // console.log("Stored OTP Data:", otpData.otp);
     // console.log(req.body.email)
     if (otpData) {
       const storedOTP = otpData.otp.toString().trim();
@@ -61,7 +64,7 @@ const verifyOtp = async (req, res) => {
       }
     } else {
       console.log("No OTP found for the provided email");
-      res.status(400).json({ message: "No OTP found for the provided email" });
+      res.status(404).json({ message: "No OTP found for the provided email" });
     }
   } catch (error) {
     // console.log("Error verifying OTP:", error);

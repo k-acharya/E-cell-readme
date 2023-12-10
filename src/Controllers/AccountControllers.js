@@ -13,10 +13,10 @@ const signup = async (req, res) => {
       return res.status(400).json({ error: "Please fill all required fields" });
     }
 
-    const Name = name.toString().trim();
-    const Email = email.toString().trim();
-    const Password = email.toString().trim();
-    const Bio = bio.toString().trim();
+    const Name = name?.toString().trim();
+    const Email = email?.toString().toLowerCase().trim();
+    const Password = password?.toString().trim();
+    const Bio = bio?.toString().trim();
 
     if (Password.length < 8) {
       return res
@@ -24,17 +24,17 @@ const signup = async (req, res) => {
         .json({ error: "Password should not be less than 8 characters" });
     }
 
-    const existingUser = await AuthSchemaModel.findOne({ email:Email });
+    const existingUser = await AuthSchemaModel.findOne({ email: Email });
     if (existingUser) {
       return res.status(400).json({ error: "Email already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(Password, 10);
     const user = new AuthSchemaModel({
-      Name,
-      email:Email,
+      name: Name,
+      email: Email,
       password: hashedPassword,
-      Bio,
+      bio: Bio,
       userimg,
     });
 
@@ -54,10 +54,10 @@ const login = async (req, res) => {
       return res.status(400).json({ error: "Please fill all required fields" });
     }
 
-    const Email = email.toString().trim();
-    const Password = password.toString().trim();
+    const Email = email?.toString().trim();
+    const Password = password?.toString().trim();
 
-    const user = await AuthSchemaModel.findOne({ email:Email });
+    const user = await AuthSchemaModel.findOne({ email: Email });
     if (!user) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
@@ -69,7 +69,7 @@ const login = async (req, res) => {
 
     const passwordMatch = await bcrypt.compare(Password, user.password);
     if (!passwordMatch) {
-      return res.status(401).json({ error: "Invalid email or password" });
+      return res.status(401).json({ error: "wrong email or password" });
     }
 
     const token = jwt.sign(
@@ -77,9 +77,8 @@ const login = async (req, res) => {
       process.env.YOUR_SECRET_KEY,
       { expiresIn: "720h" } // token valid for 30 days
     );
-    // localStorage.setItem('token', token);
+
     res.status(200).json({ message: "Login successful", token });
-    // console.log("login successful");
   } catch (error) {
     console.error("Failed to log in", error);
     res.status(500).json({ error: "Failed to log in" });
@@ -126,7 +125,7 @@ const dashboard = async (req, res) => {
 const editProfile = async (req, res) => {
   verifyToken.verifyToken(req, res, async () => {
     const userId = req.user.userId;
-    const {
+    let {
       name,
       bio,
       userimg,
@@ -138,7 +137,44 @@ const editProfile = async (req, res) => {
       confirmnewpwd,
     } = req.body;
 
+    if (name) {
+      name = name?.toString().trim();
+    }
+
+    if (bio) {
+      bio = bio?.toString().trim();
+    }
+
+    if (github) {
+      github = github?.toString().trim();
+    }
+
+    if (facebook) {
+      facebook = facebook?.toString().trim();
+    }
+
+    if (linkedin) {
+      linkedin = linkedin?.toString().trim();
+    }
+
+    if (instagram) {
+      instagram = instagram?.toString().trim();
+    }
+
+    if (newpwd) {
+      newpwd = newpwd?.toString().trim();
+    }
+
+    if (confirmnewpwd) {
+      confirmnewpwd = confirmnewpwd?.toString().trim();
+    }
+
     try {
+      const user = await AuthSchemaModel.findById(userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
       if (
         !name &&
         !bio &&
@@ -155,62 +191,48 @@ const editProfile = async (req, res) => {
           .json({ error: "Please fill at least one field" });
       }
 
-      const Name = name.toString().trim();
-      const Bio = bio.toString().trim();
-      const Github = github.toString().trim();
-      const Facebook = facebook.toString().trim();
-      const Linkedin = linkedin.toString().trim();
-      const Instagram = instagram.toString().trim();
-      const Newpwd = newpwd.toString().trim();
-      const Confirmnewpwd = confirmnewpwd.toString().trim();
-
-      const user = await AuthSchemaModel.findById(userId);
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-
-      if (Newpwd !== "" && Newpwd.length < 8) {
+      if (newpwd !== "" && newpwd.length < 8) {
         return res
           .status(400)
           .json({ error: "New Password should not be less than 8 characters" });
       }
 
-      if (Newpwd !== Confirmnewpwd) {
+      if (newpwd !== confirmnewpwd) {
         return res.status(400).json({ error: "Passwords must match" });
       }
 
-      const newHashedPwd = await bcrypt.hash(Newpwd, 10);
+      const newHashedPwd = await bcrypt.hash(newpwd, 10);
 
-      if (Newpwd) {
+      if (newpwd) {
         user.password = newHashedPwd;
       }
 
-      if (Name) {
-        user.name = Name;
+      if (name) {
+        user.name = name;
       }
 
-      if (Bio) {
-        user.bio = Bio;
+      if (bio) {
+        user.bio = bio;
       }
 
       if (userimg) {
         user.userimg = userimg;
       }
 
-      if (Github) {
-        user.github = Github;
+      if (github) {
+        user.github = github;
       }
 
-      if (Facebook) {
-        user.facebook = Facebook;
+      if (facebook) {
+        user.facebook = facebook;
       }
 
-      if (Linkedin) {
-        user.linkedin = Linkedin;
+      if (linkedin) {
+        user.linkedin = linkedin;
       }
 
-      if (Instagram) {
-        user.instagram = Instagram;
+      if (instagram) {
+        user.instagram = instagram;
       }
 
       await user.save();
@@ -245,11 +267,11 @@ const forgotPwd = async (req, res) => {
   if (!email) {
     return res.status(400).json({ error: "missing email" });
   }
-
-  const Email = email.toString().trim();
+  
+  const Email = email.toString().toLowerCase().trim();
   const otp = Math.floor(100000 + Math.random() * 900000);
 
-  const existingUser = await AuthSchemaModel.findOne({ email:Email });
+  const existingUser = await AuthSchemaModel.findOne({ email: Email });
   if (!existingUser) {
     return res.status(400).json({ error: "No account with this email found." });
   }
@@ -262,7 +284,7 @@ const forgotPwd = async (req, res) => {
     );
 
     await OTPresetpwdModel.findOneAndUpdate(
-      { email:Email },
+      { email: Email },
       { otp },
       { upsert: true }
     );
@@ -276,7 +298,7 @@ const forgotPwd = async (req, res) => {
 
 const verifyOrpResetPwd = async (req, res) => {
   // console.log("Request Body:", req.body);
-  const enteredOTP = req.body.otp.toString().trim();
+  const enteredOTP = req.body.otp?.toString().trim();
   const { email } = req.body;
   try {
     const otpData = await OTPresetpwdModel.findOne({ email }).exec();
@@ -295,7 +317,7 @@ const verifyOrpResetPwd = async (req, res) => {
       res.status(400).json({ message: "No OTP found for the provided email" });
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res
       .status(500)
       .json({ error: "An error occurred while verifying the OTP" });
@@ -303,7 +325,11 @@ const verifyOrpResetPwd = async (req, res) => {
 };
 
 const changingPwd = async (req, res) => {
-  const { email, newpwd0, confirmnewpwd0 } = req.body;
+  let { email, newpwd0, confirmnewpwd0 } = req.body;
+
+  email = email?.toString().toLowerCase().trim();
+  newpwd0 = newpwd0?.toString().trim();
+  confirmnewpwd0 = confirmnewpwd0?.toString().trim();
 
   try {
     const user = await AuthSchemaModel.findOne({ email: email });
@@ -426,7 +452,9 @@ const getAllAccounts = async (req, res) => {
           .json({ error: "something went wrong on the server" });
       }
     } else {
-      return res.status(401).json({ error: "Not authorized to access this api endpoint" });
+      return res
+        .status(401)
+        .json({ error: "Not authorized to access this api endpoint" });
     }
   });
 };
