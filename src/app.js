@@ -11,7 +11,7 @@ require("dotenv").config();
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use(express.json());
 app.use(cors());
-app.use(morgan("tiny"));
+app.use(morgan("combined"));
 
 connectToDB();
 
