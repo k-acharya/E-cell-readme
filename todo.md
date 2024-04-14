@@ -1,0 +1,4 @@
+- currently there is nothing such role exists for any users. We need to give one default role of client to all the users who signup on the website. Those who will have the role==="superadmin" can promote or demote the role of the user.
+- Superadmin will have the access to all the users details. He/She can delete any one's account.
+- Admin will have access to the all event registrations, can publish blogs, access to the newsletter signups, contact us responses, add events
+- event registration endpoint for both individual and group registration
