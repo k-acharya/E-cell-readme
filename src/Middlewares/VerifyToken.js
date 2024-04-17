@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { AuthSchemaModel } = require("../Models/UserModel");
 const verifyToken = (req, res, next) => {
   const token = req.headers.authorization;
 
@@ -23,6 +24,17 @@ const verifyToken = (req, res, next) => {
   }
 };
 
+const isAdmin = async (req, res, next) => {
+  const user = await AuthSchemaModel.findOne({ _id: req.user.userId });
+  req.user.role = user.role;
+  // console.log(req.user.role);
+  if (req.user.role !== "admin" && req.user.role !== "superadmin") {
+    return res.status(403).json({ error: "Unauthorized" });
+  }
+  next();
+};
+
 module.exports = {
   verifyToken,
+  isAdmin,
 };

@@ -95,6 +95,7 @@ const dashboard = async (req, res) => {
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
+      // console.log(user);
       const {
         name,
         email,
@@ -104,16 +105,18 @@ const dashboard = async (req, res) => {
         github,
         linkedin,
         instagram,
+        role
       } = user;
-      res.status(200).json({
+      return res.status(200).json({
         name,
         email,
         bio,
-        userimg,
         facebook,
         github,
         linkedin,
         instagram,
+        role,
+        userimg,
       });
     } catch (error) {
       console.error("Failed to retrieve user details", error);
@@ -267,7 +270,7 @@ const forgotPwd = async (req, res) => {
   if (!email) {
     return res.status(400).json({ error: "missing email" });
   }
-  
+
   const Email = email.toString().toLowerCase().trim();
   const otp = Math.floor(100000 + Math.random() * 900000);
 

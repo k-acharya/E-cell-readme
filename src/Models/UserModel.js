@@ -23,6 +23,13 @@ const UserSchema2 = new mongoose.Schema({
     required: true,
     lowercase: true,
   },
+  read:{
+    type:Boolean,
+    default:false
+  },
+  sentAt:{
+    type:String
+  }
 });
 
 const Authschema = new mongoose.Schema({
