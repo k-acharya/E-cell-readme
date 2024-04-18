@@ -124,6 +124,10 @@ const blogsschema = new mongoose.Schema({
   },
   authorid: String,
   timestamp: Date,
+  status: {
+    type: String,
+    default: "provisional",
+  },
   comments: [
     {
       commentauthor: String,

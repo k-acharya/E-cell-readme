@@ -58,6 +58,16 @@ const sendQuery = async (req, res) => {
   const subject = " Thank You for Contacting ECELL!";
   const text = `Dear ${user.name},\n\nThank you for reaching out to us through our website's "Contact Us" form.\nYou sent:\n> ${user.message}\n\nWe appreciate your interest in E-Cell, NITS. Our team is currently reviewing your message and will respond shortly.\n\nWhile we work on your inquiry, feel free to explore our website for more information. If you have any urgent questions or concerns, please don't hesitate to contact us directly at ecell@nits.ac.in.\n\nThank you for contacting us, and we look forward to assisting you!\n\nBest regards,\n\nE-Cell,\nNational Institute of Technology, Silchar`;
   sendEmail.sendEmail(email, subject, text);
+  const adminMail={
+    email:[
+      "sahin0945@gmail.com",
+      "aditya21_ug@civil.nits.ac.in",
+      "arpitdhankani@gmail.com"
+    ],
+    subject:`New Query from ${user.name}`,
+    text:`${user.name} has sent a query through the website. Read the full query at https://ecellnits.org/admin/messages \n\nContact them at ${user.email}`
+  }
+  sendEmail.sendEmail(adminMail.email,adminMail.subject,adminMail.text);
   res.json(user);
 };
 

@@ -97,8 +97,12 @@ router.get("/getblogs/:id", BlogController.getBlogsId);
 // public route to fetch the accepted blogs on the resources page
 router.get("/acceptedblogs", BlogController.acceptedBlogs);
 
+
 // publish the provisional blog and move it to the published blog
-router.post("/acceptedblogs", BlogController.acceptedBlogsPost);
+router.post("/publishblog/:id",verifyToken.verifyToken,verifyToken.isAdmin, BlogController.publishBlogs);
+
+// delete blogs
+router.delete("/deleteblog/:id",verifyToken.verifyToken,verifyToken.isAdmin, BlogController.deleteBlogs);
 
 // edit the blog
 router.put("/editblog/:blogId", BlogController.editBlog);
