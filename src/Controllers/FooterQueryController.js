@@ -1,9 +1,7 @@
-const {
-  UserModel,
-  UserModel2,
-} = require("../Models/UserModel");
+const { UserModel, UserModel2 } = require("../Models/UserModel");
+// const {req,res} = require('express');
 
-const sendEmail = require("../Utils/Email/EmailService")
+const sendEmail = require("../Utils/Email/EmailService");
 
 const getUsers = (req, res) => {
   const password = req.body.password;
@@ -51,19 +49,73 @@ const createUser = async (req, res) => {
   res.json(user);
 };
 
-const sendQuery = async(req,res) => {
-    const user = req.body;
-    const newUser = new UserModel2(user);
-    await newUser.save();
-    const email = user.email;
-    const subject = " Thank You for Contacting ECELL!";
-    const text = `Dear ${user.name},\n\nThank you for reaching out to us through our website's "Contact Us" form.\nYou sent:\n> ${user.message}\n\nWe appreciate your interest in E-Cell, NITS. Our team is currently reviewing your message and will respond shortly.\n\nWhile we work on your inquiry, feel free to explore our website for more information. If you have any urgent questions or concerns, please don't hesitate to contact us directly at ecell@nits.ac.in.\n\nThank you for contacting us, and we look forward to assisting you!\n\nBest regards,\n\nE-Cell,\nNational Institute of Technology, Silchar`;
-    sendEmail.sendEmail(email, subject, text);
-    res.json(user);
+const sendQuery = async (req, res) => {
+  const user = req.body;
+  user.sentAt=new Date().toLocaleString();
+  const newUser = new UserModel2(user);
+  await newUser.save();
+  const email = user.email;
+  const subject = " Thank You for Contacting ECELL!";
+  const text = `Dear ${user.name},\n\nThank you for reaching out to us through our website's "Contact Us" form.\nYou sent:\n> ${user.message}\n\nWe appreciate your interest in E-Cell, NITS. Our team is currently reviewing your message and will respond shortly.\n\nWhile we work on your inquiry, feel free to explore our website for more information. If you have any urgent questions or concerns, please don't hesitate to contact us directly at ecell@nits.ac.in.\n\nThank you for contacting us, and we look forward to assisting you!\n\nBest regards,\n\nE-Cell,\nNational Institute of Technology, Silchar`;
+  sendEmail.sendEmail(email, subject, text);
+  const adminMail={
+    email:[
+      "sahin0945@gmail.com",
+      "aditya21_ug@civil.nits.ac.in",
+      "arpitdhankani@gmail.com"
+    ],
+    subject:`New Query from ${user.name}`,
+    text:`${user.name} has sent a query through the website. Read the full query at https://ecellnits.org/admin/messages \n\nContact them at ${user.email}`
+  }
+  sendEmail.sendEmail(adminMail.email,adminMail.subject,adminMail.text);
+  res.json(user);
+};
+
+const getQueries = async (req,res) => {
+  try {
+    const queries = await UserModel2.find({});
+    return res.json(queries);
+  } catch (error) {
+    return res.json({ message: error.message });
+  }
+  
+};
+
+const getQueryById = async (req, res) => {
+  try {
+    const query = await UserModel2.findById(req.params.id);
+    // console.log(req.user);
+    return res.json(query);
+  } catch (error) {
+    return res.json({ message: error.message });
+  }
+};
+const markRead = async (req, res) => {
+  try {
+    const query = await UserModel2.findById(req.params.id);
+    query.read = true;
+    await query.save();
+    return res.json(query);
+  } catch (error) {
+    return res.json({ message: error.message });
+  }
 }
+const deleteQuery = async (req, res) => {
+  try {
+    const query = await UserModel2.findByIdAndDelete(req.params.id);
+    return res.json({ message: "Query deleted successfully" });
+  } catch (error) {
+    return res.json({ message: error.message });
+  }
+};
 
 module.exports = {
   getUsers,
   getNewsletters,
-  createUser,sendQuery
+  createUser,
+  sendQuery,
+  getQueries,
+  getQueryById,
+  markRead,
+  deleteQuery,
 };
