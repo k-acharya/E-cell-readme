@@ -1,22 +1,23 @@
-const { ApiError } = require("../../Utils/ApiError.js");
+const { ApiError, ApiResponse } = require("../../Utils/ApiError.js");
 const { asyncHandler } = require("../../Utils/asyncHandler.js");
-const Event = require("../../Models/UserModel.js")
+const { Events } = require("../../Models/Events.models.js")
 
 const addEvents = asyncHandler(async (req, res, next) => {
 
+   try {
     const { moduleName, organizers, eventName, venue, eventDetails } = req.body;
 
     if (!moduleName || !organizers || !eventName || !venue || !eventDetails) {
         throw new ApiError(400, "All fields are required.");
     }
 
-    // const existedEvent = await Event.findOne({ eventName });
+    const existedEvent = await Events.findOne({ eventName });
 
-    // if(existedEvent){
-    //     throw new ApiError(409, "Event already registered!")
-    // }
+    if(existedEvent){
+        throw new ApiError(409, "Event already registered!")
+    }
 
-    const newEvent = await Event.create({
+    const newEvent = await Events.create({
         moduleName,
         organizers,
         eventName,
@@ -25,18 +26,29 @@ const addEvents = asyncHandler(async (req, res, next) => {
     })
 
     return res.status(201).json(
-        new ApiResponse(200, newEvent, "Event Added Successfully!")
+        {
+            msg:"Event added successfully.",
+            data:newEvent
+        }
     );
 
+   } catch (error) {
+    res.json({
+        error
+    }).status(500)
+   }
 
 });
 
 const allEvents = asyncHandler(async (req, res) => {
 
-    const events = await Event.find();
+    const events = await Events.find();
 
     return res.status(200).json(
-        new ApiResponse(200, events, "Ok!")
+        {
+            msg:"Ok!",
+            data:events
+        }
     );
 });
 

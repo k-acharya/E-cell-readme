@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const eventsSchema = new mongoose.Schema({
     moduleName: {
@@ -26,4 +26,7 @@ const eventsSchema = new mongoose.Schema({
 }, { timestamps: true }
 )
 
-export const Events = mongoose.model(("Events"), eventsSchema)
+const Events = mongoose.model(("Events"), eventsSchema)
+module.exports={
+    Events
+}
