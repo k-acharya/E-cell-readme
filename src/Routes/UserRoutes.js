@@ -8,6 +8,7 @@ const FooterQueryController = require("../Controllers/FooterQueryController");
 const BlogOpearionsController = require("../Controllers/BlogOperationsController");
 const LikeBlogControllers = require("../Controllers/LikeBlogController");
 const BlogCommentsController = require("../Controllers/BlogCommentsController");
+const verifyToken= require("./../Middlewares/VerifyToken")
 
 // create account
 router.post("/signup", AccountController.signup);
@@ -27,12 +28,11 @@ router.put("/editprofile", AccountController.editProfile);
 // take email and send otp to reset the password
 router.post("/forgotpwd", AccountController.forgotPwd);
 
-// verify the otp 
+// verify the otp
 router.post("/verifyotpresetpwd", AccountController.verifyOrpResetPwd);
 
 // changing the password (basically reset)
 router.put("/changingpwd", AccountController.changingPwd);
-
 
 // flagging the account for deletion, and user can't login after this
 router.post("/deleteaccount", AccountController.deleteAccount);
@@ -49,12 +49,35 @@ router.post("/getnewsletters", FooterQueryController.getNewsletters);
 // above two needs to be protected
 // change method to get from post
 
-
 // subscribe to the newsletter requries email
 router.post("/createUser", FooterQueryController.createUser);
 
 // contact us form, requires name, email, message
 router.post("/sendquery", FooterQueryController.sendQuery);
+router.get(
+  "/getqueries",
+  verifyToken.verifyToken,
+  verifyToken.isAdmin,
+  FooterQueryController.getQueries
+);
+router.get(
+  "/getqueries/:id",
+  verifyToken.verifyToken,
+  verifyToken.isAdmin,
+  FooterQueryController.getQueryById
+);
+router.get(
+  "/query-read/:id",
+  verifyToken.verifyToken,
+  verifyToken.isAdmin,
+  FooterQueryController.markRead
+);
+router.delete(
+  "/deletequery/:id",
+  verifyToken.verifyToken,
+  verifyToken.isAdmin,
+  FooterQueryController.deleteQuery
+);
 
 // check if email is already registered for the newsletter
 router.post("/check-email", UniqueAccountController.checkEmail);
@@ -74,8 +97,12 @@ router.get("/getblogs/:id", BlogController.getBlogsId);
 // public route to fetch the accepted blogs on the resources page
 router.get("/acceptedblogs", BlogController.acceptedBlogs);
 
+
 // publish the provisional blog and move it to the published blog
-router.post("/acceptedblogs", BlogController.acceptedBlogsPost);
+router.post("/publishblog/:id",verifyToken.verifyToken,verifyToken.isAdmin, BlogController.publishBlogs);
+
+// delete blogs
+router.delete("/deleteblog/:id",verifyToken.verifyToken,verifyToken.isAdmin, BlogController.deleteBlogs);
 
 // edit the blog
 router.put("/editblog/:blogId", BlogController.editBlog);
