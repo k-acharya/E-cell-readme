@@ -1,5 +1,5 @@
 const {
-  PublishedBlog,
+  blogs1,
   AuthSchemaModel,
 } = require("../Models/UserModel");
 
@@ -11,7 +11,7 @@ const blogIdLike = async (req, res) => {
     const blogId = req.params.blogId;
 
     try {
-      const blog = await PublishedBlog.findById(blogId);
+      const blog = await blogs1.findById(blogId);
       if (!blog) {
         return res.status(404).json({ error: "Blog not found" });
       }
@@ -48,7 +48,7 @@ const fetchLikedBlogs = async (req, res) => {
         return res.status(404).json({ error: "User not found" });
       }
 
-      const likedBlogs = await PublishedBlog.find({ likes: userId }).exec();
+      const likedBlogs = await blogs1.find({ likes: userId }).exec();
 
       // console.log(likedBlogs);
       res.status(200).json(likedBlogs);

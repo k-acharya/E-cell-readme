@@ -1,15 +1,15 @@
-const { blogs1, PublishedBlog } = require("../Models/UserModel");
+const { blogs1 } = require("../Models/UserModel");
 
 const verifyToken = require("../Middlewares/VerifyToken");
 const sendEmail = require("../Utils/Email/EmailService");
 
 const createBlog = async (req, res) => {
   verifyToken.verifyToken(req, res, async () => {
-    try{
+    try {
       const user = req.body;
       const newUser = new blogs1(user);
       await newUser.save();
-  
+
       /* Sending mail to Content team member for kind verification of blog */
       const email = [
         "aditya21_ug@civil.nits.ac.in",
@@ -23,7 +23,7 @@ const createBlog = async (req, res) => {
       sendEmail.sendEmail(email, subject, text);
       res.json(user);
       return res.status(200).json({ message: "Blog created successfully" });
-    }catch(err){
+    } catch (err) {
       console.error("Error creating blog:", err);
       res.status(500).json({ error: "Error creating blog" });
     }
@@ -53,7 +53,10 @@ const myPublishedBlogs = async (req, res) => {
       const writerEmail = req.user.email;
 
       console.log(writerEmail);
-      const blogs = await PublishedBlog.find({ writeremail: writerEmail });
+      const blogs = await blogs1.find({
+        writeremail: writerEmail,
+        status: "published",
+      });
       res.status(200).json({ blogs });
       console.log(blogs);
     } catch (error) {
@@ -68,7 +71,10 @@ const publicilyWrittenBlogs = async (req, res) => {
     const { authoruniqueid } = req.params;
     console.log(authoruniqueid);
     // const blogs = await PublishedBlog.findById(authoruniqueid);
-    const blogs = await PublishedBlog.find({ authorid: authoruniqueid });
+    const blogs = await blogs1.find({
+      authorid: authoruniqueid,
+      status: "published",
+    });
 
     if (blogs.length === 0) {
       return res.status(404).json({ error: "No blogs found for the user" });
@@ -110,8 +116,9 @@ const tagSpecificBlog = async (req, res) => {
   try {
     const { tagname } = req.params;
     console.log(tagname);
-    const blogs = await PublishedBlog.find({
+    const blogs = await blogs1.find({
       tag: { $regex: "\\b" + tagname + "\\b", $options: "i" },
+      status: "published",
     });
 
     if (blogs.length === 0) {
