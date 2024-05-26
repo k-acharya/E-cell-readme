@@ -29,7 +29,7 @@ const isAdmin = async (req, res, next) => {
   req.user.role = user.role;
   // console.log(req.user.role);
   if (req.user.role !== "admin" && req.user.role !== "superadmin") {
-    return res.status(403).json({ error: "Unauthorized" });
+    return res.status(403).json({ error: "Authorized only to the admins" });
   }
   next();
 };

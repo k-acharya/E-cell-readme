@@ -446,8 +446,8 @@ const getAllAccounts = async (req, res) => {
 
     if (user.role === "superadmin") {
       try {
-        const users = await AuthSchemaModel.find();
-        res.status(200).json({ users });
+        const users = await AuthSchemaModel.find()
+        res.status(200).json({users});
       } catch (e) {
         console.error(e);
         return res

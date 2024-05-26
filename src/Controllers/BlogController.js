@@ -217,8 +217,8 @@ const deleteBlogs = async (req, res) => {
 
     res.status(200).json({ message: "Blog published successfully" });
   } catch (error) {
-    console.log("Error storing published blog:", error);
-    res.status(500).json({ error: "Error storing published blog" });
+    console.log("Error in deleting blog:", error);
+    res.status(500).json({ error: "Error in deleting blog" });
   }
 };
 
