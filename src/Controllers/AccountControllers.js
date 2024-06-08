@@ -105,7 +105,7 @@ const dashboard = async (req, res) => {
         github,
         linkedin,
         instagram,
-        role
+        role,
       } = user;
       return res.status(200).json({
         name,
@@ -446,8 +446,8 @@ const getAllAccounts = async (req, res) => {
 
     if (user.role === "superadmin") {
       try {
-        const users = await AuthSchemaModel.find()
-        res.status(200).json({users});
+        const users = await AuthSchemaModel.find();
+        res.status(200).json({ users });
       } catch (e) {
         console.error(e);
         return res
@@ -459,6 +459,82 @@ const getAllAccounts = async (req, res) => {
         .status(401)
         .json({ error: "Not authorized to access this api endpoint" });
     }
+  });
+};
+
+const makeAdmin = async (req, res) => {
+  verifyToken.verifyToken(req, res, async () => {
+    const userId = req.user.userId;
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const superadmin = await AuthSchemaModel.findById(userId);
+    if (superadmin.role !== "superadmin") {
+      return res
+        .status(404)
+        .json({ error: "Unauthorised to perform this action" });
+    }
+
+    const email = req.params.email;
+    const user = await AuthSchemaModel.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    try {
+      const userUpdated = await AuthSchemaModel.updateOne(
+        { email },
+        { role: "admin" }
+      );
+      res.status(200).json({ message: "User is now an admin" });
+    } catch (e) {
+      console.error(e);
+        return res
+          .status(500)
+          .json({ error: "something went wrong on the server" });
+    }
+    
+    
+  });
+};
+
+const makeClient = async (req, res) => {
+  verifyToken.verifyToken(req, res, async () => {
+    const userId = req.user.userId;
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const superadmin = await AuthSchemaModel.findById(userId);
+    if (superadmin.role !== "superadmin") {
+      return res
+        .status(404)
+        .json({ error: "Unauthorised to perform this action" });
+    }
+
+    const email = req.params.email;
+    const user = await AuthSchemaModel.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    try {
+      const userUpdated = await AuthSchemaModel.updateOne(
+        { email },
+        { role: "client" }
+      );
+      res.status(200).json({ message: "User is now an client" });
+    } catch (e) {
+      console.error(e);
+        return res
+          .status(500)
+          .json({ error: "something went wrong on the server" });
+    }
+    
+    
   });
 };
 
@@ -474,5 +550,7 @@ module.exports = {
   getPublicProfile,
   deleteAccount,
   getAllAccounts,
+  makeAdmin,
+  makeClient
 };
 // accountController.js

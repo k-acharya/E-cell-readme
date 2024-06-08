@@ -143,6 +143,9 @@ router.get("/allaccounts", AccountController.getAllAccounts);
 
 router.get("/", HomeController.home);
 
+router.get("/makeadmin/:email", AccountController.makeAdmin);
+router.get("/makeclient/:email", AccountController.makeClient);
+
 module.exports = router;
 
 // ! we need to create routes for the event registration
