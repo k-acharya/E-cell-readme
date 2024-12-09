@@ -99,7 +99,7 @@ router.get("/acceptedblogs", BlogController.acceptedBlogs);
 
 
 // publish the provisional blog and move it to the published blog
-router.post("/publishblog/:id",verifyToken.verifyToken,verifyToken.isAdmin, BlogController.publishBlogs);
+router.post("/publishblog/:id", BlogController.publishBlogs);
 
 // delete blogs
 router.delete("/deleteblog/:id",verifyToken.verifyToken,verifyToken.isAdmin, BlogController.deleteBlogs);
